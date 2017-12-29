@@ -1,21 +1,21 @@
 #!/bin/bash -xe
 
-for x in `ls -1d ci/docker/{fedora,centos}*`; do
-    name=`echo "$x" | awk -F/ '{print $3}'`
-    dist_num=`echo "$name" | sed -r 's/[a-z]+([0-9]+)/\1/'`
-    docker_tag="parallelssh/ssh2-python:$name"
-    if [[ $dist_num -gt 20 ]]; then
-	dist="fc${dist_num}"
-    else
-	dist="el${dist_num}"
-    fi
-    docker pull $docker_tag || echo
-    docker build --cache-from $docker_tag $x -t $name
-    docker tag $name $docker_tag
-    docker push $docker_tag
-    sudo rm -rf build dist
-    docker -D run -v "$(pwd):/src/" "$name" --rpm-dist $dist -s python -t rpm -d libssh2 -d python setup.py
-done
+# for x in `ls -1d ci/docker/{fedora,centos}*`; do
+#     name=`echo "$x" | awk -F/ '{print $3}'`
+#     dist_num=`echo "$name" | sed -r 's/[a-z]+([0-9]+)/\1/'`
+#     docker_tag="parallelssh/ssh2-python:$name"
+#     if [[ $dist_num -gt 20 ]]; then
+# 	dist="fc${dist_num}"
+#     else
+# 	dist="el${dist_num}"
+#     fi
+#     docker pull $docker_tag || echo
+#     docker build --cache-from $docker_tag $x -t $name
+#     docker tag $name $docker_tag
+#     docker push $docker_tag
+#     sudo rm -rf build dist
+#     docker -D run -v "$(pwd):/src/" "$name" --rpm-dist $dist -s python -t rpm -d libssh2 -d python setup.py
+# done
 
 for x in `ls -1d ci/docker/{debian,ubuntu}*`; do
     name=`echo "$x" | awk -F/ '{print $3}' | awk -F. '{print $1}'`
