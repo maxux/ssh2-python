@@ -60,6 +60,8 @@ jobs:
       # script: skip
       # before_deploy:
       script:
+        - sudo rm /etc/apparmor.d/docker-engine
+        - sudo service docker restart
         - docker --version
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
         - ./ci/docker/build-packages.sh
