@@ -184,12 +184,18 @@ cdef class SFTP:
         :raises: :py:class:`ssh2.exceptions.SFTPHandleError` on errors opening
           file.
         """
-        cdef c_sftp.LIBSSH2_SFTP_HANDLE *_handle
+        cdef c_sftp.LIBSSH2_SFTP_HANDLE *_handle = NULL
         cdef bytes b_filename = to_bytes(filename)
         cdef char *_filename = b_filename
+        cdef int rc = c_ssh2.LIBSSH2_ERROR_EAGAIN
+
         with nogil:
-            _handle = c_sftp.libssh2_sftp_open(
-                self._sftp, _filename, flags, mode)
+            while _handle == NULL and rc == c_ssh2.LIBSSH2_ERROR_EAGAIN:
+                _handle = c_sftp.libssh2_sftp_open(
+                    self._sftp, _filename, flags, mode)
+
+                rc = c_ssh2.libssh2_session_last_errno(self._session._session)
+
         if _handle is NULL:
             raise SFTPHandleError(
                 "Could not open file %s - error code %s - %s", filename,
