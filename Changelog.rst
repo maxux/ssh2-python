@@ -2,13 +2,24 @@ Change Log
 =============
 
 0.11.0
-+++++++
+++++++++
 
 Changes
---------
+---------
 
+* Session functions now raise exceptions.
+* Channel functions now raise specific exceptions.
 * SCP errors now raise exceptions.
 * SFTP open handle errors now raise exceptions.
+* Added exceptions for all known libssh2 error codes.
+* Added ``ssh2.utils.handle_error_codes`` function for raising appropriate exception from error code.
+* Added file types to ``ssh2.sftp``.
+
+Fixes
+------
+
+* Double de-allocation crash on objects being garbage collected in some rare cases.
+
 
 0.10.0
 ++++++++

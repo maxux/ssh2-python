@@ -1,7 +1,18 @@
 from .base_test import SSH2TestCase
 
+from ssh2.exceptions import SocketSendError
+from ssh2.session import Session
+from ssh2.channel import Channel
+
 
 class ChannelTestCase(SSH2TestCase):
+
+    def test_init(self):
+        self.assertEqual(self._auth(), 0)
+        chan = self.session.open_session()
+        self.assertIsInstance(chan, Channel)
+        self.assertIsInstance(chan.session, Session)
+        self.assertEqual(chan.session, self.session)
 
     def test_execute(self):
         self.assertEqual(self._auth(), 0)
@@ -12,8 +23,8 @@ class ChannelTestCase(SSH2TestCase):
         lines = [s.decode('utf-8') for s in data.splitlines()]
         self.assertTrue(size > 0)
         self.assertTrue(lines, [self.resp])
-        self.assertTrue(chan.close() == 0)
-        self.assertTrue(chan.wait_eof() == 0)
+        self.assertEqual(chan.wait_eof(), 0)
+        self.assertEqual(chan.wait_closed(), 0)
 
     def test_exit_code(self):
         self.assertEqual(self._auth(), 0)
@@ -57,18 +68,26 @@ class ChannelTestCase(SSH2TestCase):
         lines = [s.decode('utf-8') for s in data.splitlines()]
         self.assertListEqual(expected, lines)
 
+    def test_pty_failure(self):
+        self.assertEqual(self._auth(), 0)
+        chan = self.session.open_session()
+        self.sock.close()
+        self.assertRaises(SocketSendError, chan.pty)
+
     def test_write_stdin(self):
         self.assertEqual(self._auth(), 0)
         _in = u'writing to stdin'
         chan = self.session.open_session()
         chan.execute('cat')
         chan.write(_in + '\n')
-        chan.close()
-        chan.wait_closed()
+        self.assertEqual(chan.close(), 0)
         size, data = chan.read()
         self.assertTrue(size > 0)
         lines = [s.decode('utf-8') for s in data.splitlines()]
         self.assertListEqual([_in], lines)
+        self.assertEqual(chan.eof(), 0)
+        self.assertEqual(chan.wait_eof(), 0)
+        self.assertEqual(chan.wait_closed(), 0)
 
     def test_write_ex(self):
         self.assertEqual(self._auth(), 0)
@@ -76,8 +95,7 @@ class ChannelTestCase(SSH2TestCase):
         chan = self.session.open_session()
         chan.execute('cat')
         chan.write_ex(0, _in + '\n')
-        chan.close()
-        chan.wait_closed()
+        self.assertEqual(chan.close(), 0)
         size, data = chan.read()
         self.assertTrue(size > 0)
         lines = [s.decode('utf-8') for s in data.splitlines()]
@@ -89,8 +107,7 @@ class ChannelTestCase(SSH2TestCase):
         chan.execute('echo something')
         _in = u'stderr'
         self.assertTrue(chan.write_stderr(_in + '\n') > 0)
-        chan.close()
-        chan.wait_closed()
+        self.assertEqual(chan.close(), 0)
 
     def test_setenv(self):
         self.assertEqual(self._auth(), 0)

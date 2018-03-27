@@ -782,6 +782,7 @@ struct __pyx_obj_4ssh2_7session_Session {
  */
 struct __pyx_obj_4ssh2_4sftp_SFTP {
   PyObject_HEAD
+  struct __pyx_vtabstruct_4ssh2_4sftp_SFTP *__pyx_vtab;
   LIBSSH2_SFTP *_sftp;
   struct __pyx_obj_4ssh2_7session_Session *_session;
 };
@@ -866,6 +867,20 @@ struct __pyx_obj_4ssh2_11sftp_handle___pyx_scope_struct_1_readdir {
 };
 
 
+
+/* "sftp.pxd":26
+ * 
+ * 
+ * cdef class SFTP:             # <<<<<<<<<<<<<<
+ *     cdef c_sftp.LIBSSH2_SFTP *_sftp
+ *     cdef Session _session
+ */
+
+struct __pyx_vtabstruct_4ssh2_4sftp_SFTP {
+  int (*_handle_error)(struct __pyx_obj_4ssh2_4sftp_SFTP *, int, PyObject *);
+};
+static struct __pyx_vtabstruct_4ssh2_4sftp_SFTP *__pyx_vtabptr_4ssh2_4sftp_SFTP;
+
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
 #ifndef CYTHON_REFNANNY
@@ -949,12 +964,8 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
 /* GetBuiltinName.proto */
 static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
-/* PyObjectCall.proto */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
-#else
-#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
-#endif
+/* ExtTypeTest.proto */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
 
 /* RaiseArgTupleInvalid.proto */
 static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
@@ -962,6 +973,13 @@ static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
 
 /* KeywordStringCheck.proto */
 static int __Pyx_CheckKeywordStrings(PyObject *kwdict, const char* function_name, int kw_allowed);
+
+/* PyObjectCall.proto */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
+#else
+#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
+#endif
 
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
@@ -1009,9 +1027,6 @@ static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_n
 static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
     PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
     const char* function_name);
-
-/* ExtTypeTest.proto */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
 
 /* PyCFunctionFastCall.proto */
 #if CYTHON_FAST_PYCCALL
@@ -1099,6 +1114,9 @@ static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
 
 /* SetupReduce.proto */
 static int __Pyx_setup_reduce(PyObject* type_obj);
+
+/* GetVTable.proto */
+static void* __Pyx_GetVtable(PyObject *dict);
 
 /* Import.proto */
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
@@ -1322,6 +1340,7 @@ static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_readdir_2[] = "_readdir";
 static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
 static const char __pyx_k_exceptions[] = "exceptions";
+static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_readdir_ex[] = "readdir_ex";
 static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_SFTPIOError[] = "SFTPIOError";
@@ -1358,6 +1377,7 @@ static PyObject *__pyx_n_s_longentry_maxlen;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
+static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_read;
 static PyObject *__pyx_n_s_readdir;
 static PyObject *__pyx_n_s_readdir_2;
@@ -1451,7 +1471,7 @@ static PyObject *__pyx_tuple__8;
  * 
  * 
  * cdef object PySFTPHandle(c_sftp.LIBSSH2_SFTP_HANDLE *handle, SFTP sftp):             # <<<<<<<<<<<<<<
- *     cdef SFTPHandle _handle = SFTPHandle(sftp)
+ *     cdef SFTPHandle _handle = SFTPHandle.__new__(SFTPHandle, sftp)
  *     _handle._handle = handle
  */
 
@@ -1466,7 +1486,7 @@ static PyObject *__pyx_f_4ssh2_11sftp_handle_PySFTPHandle(LIBSSH2_SFTP_HANDLE *_
   /* "ssh2/sftp_handle.pyx":28
  * 
  * cdef object PySFTPHandle(c_sftp.LIBSSH2_SFTP_HANDLE *handle, SFTP sftp):
- *     cdef SFTPHandle _handle = SFTPHandle(sftp)             # <<<<<<<<<<<<<<
+ *     cdef SFTPHandle _handle = SFTPHandle.__new__(SFTPHandle, sftp)             # <<<<<<<<<<<<<<
  *     _handle._handle = handle
  *     return _handle
  */
@@ -1475,15 +1495,16 @@ static PyObject *__pyx_f_4ssh2_11sftp_handle_PySFTPHandle(LIBSSH2_SFTP_HANDLE *_
   __Pyx_INCREF(((PyObject *)__pyx_v_sftp));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_sftp));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_sftp));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_4ssh2_11sftp_handle_SFTPHandle), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_2 = __pyx_tp_new_4ssh2_11sftp_handle_SFTPHandle(((PyTypeObject *)__pyx_ptype_4ssh2_11sftp_handle_SFTPHandle), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (!(likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_4ssh2_11sftp_handle_SFTPHandle)))) __PYX_ERR(0, 28, __pyx_L1_error)
   __pyx_v__handle = ((struct __pyx_obj_4ssh2_11sftp_handle_SFTPHandle *)__pyx_t_2);
   __pyx_t_2 = 0;
 
   /* "ssh2/sftp_handle.pyx":29
  * cdef object PySFTPHandle(c_sftp.LIBSSH2_SFTP_HANDLE *handle, SFTP sftp):
- *     cdef SFTPHandle _handle = SFTPHandle(sftp)
+ *     cdef SFTPHandle _handle = SFTPHandle.__new__(SFTPHandle, sftp)
  *     _handle._handle = handle             # <<<<<<<<<<<<<<
  *     return _handle
  * 
@@ -1491,7 +1512,7 @@ static PyObject *__pyx_f_4ssh2_11sftp_handle_PySFTPHandle(LIBSSH2_SFTP_HANDLE *_
   __pyx_v__handle->_handle = __pyx_v_handle;
 
   /* "ssh2/sftp_handle.pyx":30
- *     cdef SFTPHandle _handle = SFTPHandle(sftp)
+ *     cdef SFTPHandle _handle = SFTPHandle.__new__(SFTPHandle, sftp)
  *     _handle._handle = handle
  *     return _handle             # <<<<<<<<<<<<<<
  * 
@@ -1506,7 +1527,7 @@ static PyObject *__pyx_f_4ssh2_11sftp_handle_PySFTPHandle(LIBSSH2_SFTP_HANDLE *_
  * 
  * 
  * cdef object PySFTPHandle(c_sftp.LIBSSH2_SFTP_HANDLE *handle, SFTP sftp):             # <<<<<<<<<<<<<<
- *     cdef SFTPHandle _handle = SFTPHandle(sftp)
+ *     cdef SFTPHandle _handle = SFTPHandle.__new__(SFTPHandle, sftp)
  *     _handle._handle = handle
  */
 
@@ -9179,6 +9200,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
+  {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_read, __pyx_k_read, sizeof(__pyx_k_read), 0, 0, 1, 1},
   {&__pyx_n_s_readdir, __pyx_k_readdir, sizeof(__pyx_k_readdir), 0, 0, 1, 1},
   {&__pyx_n_s_readdir_2, __pyx_k_readdir_2, sizeof(__pyx_k_readdir_2), 0, 0, 1, 1},
@@ -9445,6 +9467,7 @@ static int __pyx_pymod_exec_sftp_handle(PyObject *__pyx_pyinit_module)
   /*--- Type import code ---*/
   __pyx_ptype_4ssh2_7session_Session = __Pyx_ImportType("ssh2.session", "Session", sizeof(struct __pyx_obj_4ssh2_7session_Session), 1); if (unlikely(!__pyx_ptype_4ssh2_7session_Session)) __PYX_ERR(2, 19, __pyx_L1_error)
   __pyx_ptype_4ssh2_4sftp_SFTP = __Pyx_ImportType("ssh2.sftp", "SFTP", sizeof(struct __pyx_obj_4ssh2_4sftp_SFTP), 1); if (unlikely(!__pyx_ptype_4ssh2_4sftp_SFTP)) __PYX_ERR(3, 26, __pyx_L1_error)
+  __pyx_vtabptr_4ssh2_4sftp_SFTP = (struct __pyx_vtabstruct_4ssh2_4sftp_SFTP*)__Pyx_GetVtable(__pyx_ptype_4ssh2_4sftp_SFTP->tp_dict); if (unlikely(!__pyx_vtabptr_4ssh2_4sftp_SFTP)) __PYX_ERR(3, 26, __pyx_L1_error)
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
   /*--- Execution code ---*/
@@ -9549,25 +9572,18 @@ static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
     return result;
 }
 
-/* PyObjectCall */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
-    PyObject *result;
-    ternaryfunc call = func->ob_type->tp_call;
-    if (unlikely(!call))
-        return PyObject_Call(func, arg, kw);
-    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
-        return NULL;
-    result = (*call)(func, arg, kw);
-    Py_LeaveRecursiveCall();
-    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
-        PyErr_SetString(
-            PyExc_SystemError,
-            "NULL result without error in PyObject_Call");
+/* ExtTypeTest */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
     }
-    return result;
+    if (likely(__Pyx_TypeCheck(obj, type)))
+        return 1;
+    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
+                 Py_TYPE(obj)->tp_name, type->tp_name);
+    return 0;
 }
-#endif
 
 /* RaiseArgTupleInvalid */
 static void __Pyx_RaiseArgtupleInvalid(
@@ -9634,6 +9650,26 @@ invalid_keyword:
     #endif
     return 0;
 }
+
+/* PyObjectCall */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
+    PyObject *result;
+    ternaryfunc call = func->ob_type->tp_call;
+    if (unlikely(!call))
+        return PyObject_Call(func, arg, kw);
+    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
+        return NULL;
+    result = (*call)(func, arg, kw);
+    Py_LeaveRecursiveCall();
+    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "NULL result without error in PyObject_Call");
+    }
+    return result;
+}
+#endif
 
 /* PyErrFetchRestore */
 #if CYTHON_FAST_THREAD_STATE
@@ -9932,19 +9968,6 @@ invalid_keyword:
     #endif
 bad:
     return -1;
-}
-
-/* ExtTypeTest */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    if (likely(__Pyx_TypeCheck(obj, type)))
-        return 1;
-    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
-                 Py_TYPE(obj)->tp_name, type->tp_name);
-    return 0;
 }
 
 /* PyCFunctionFastCall */
@@ -10487,6 +10510,26 @@ GOOD:
     Py_XDECREF(setstate);
     Py_XDECREF(setstate_cython);
     return ret;
+}
+
+/* GetVTable */
+      static void* __Pyx_GetVtable(PyObject *dict) {
+    void* ptr;
+    PyObject *ob = PyObject_GetItem(dict, __pyx_n_s_pyx_vtable);
+    if (!ob)
+        goto bad;
+#if PY_VERSION_HEX >= 0x02070000
+    ptr = PyCapsule_GetPointer(ob, 0);
+#else
+    ptr = PyCObject_AsVoidPtr(ob);
+#endif
+    if (!ptr && !PyErr_Occurred())
+        PyErr_SetString(PyExc_RuntimeError, "invalid vtable found for imported type");
+    Py_DECREF(ob);
+    return ptr;
+bad:
+    Py_XDECREF(ob);
+    return NULL;
 }
 
 /* Import */
